@@ -129,15 +129,11 @@ func _show_file_dialog(dialog: FileDialog, filters: PackedStringArray, target_li
 	for f in filters:
 		dialog.add_filter(f)
 	# Ensure dialog.access and dialog.file_mode are set in the Inspector for the FileDialog node.
-	# Example: dialog.access = FileDialog.ACCESS_RESOURCES
-	# Example: dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	dialog.file_selected.connect(func(path): target_line_edit.text = path, CONNECT_ONE_SHOT)
 	dialog.popup_centered_ratio()
 
 func _show_dir_dialog(dialog: FileDialog, target_line_edit: LineEdit) -> void:
 	# Ensure dialog.access and dialog.file_mode are set in the Inspector for the FileDialog node.
-	# Example: dialog.access = FileDialog.ACCESS_RESOURCES
-	# Example: dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
 	dialog.dir_selected.connect(func(path): target_line_edit.text = path, CONNECT_ONE_SHOT)
 	dialog.popup_centered_ratio()
 
