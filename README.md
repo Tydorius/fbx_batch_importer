@@ -32,3 +32,7 @@ This gets around some limitations on bulk importing FBX files from asset provide
 ## Notes and Warnings
 
 I have only tested this with Synty assets using a single PNG file. I included the options for normal map, etc., but I have not yet tested them. That's the primary reason this is not consider the 1.0 release. If someone else confirms they work, or if I test it, I'll move to 1.0 rc.
+
+## Support Me
+
+You can donate to me through my itch.io [profile](https://tydorius.itch.io/godot-fbx-batch-importer) or through my Ko-fi [link](https://ko-fi.com/tydorius).
