@@ -1,0 +1,275 @@
+[gd_scene load_steps=2 format=3 uid="uid://dc8fiavobifg5"]
+
+[ext_resource type="Script" uid="uid://cmsj221otbo2x" path="res://addons/fbx_batch_importer/fbx_batch_importer_popup.gd" id="1_6p777"]
+
+[node name="FBXBatchImporterPopup" type="Window"]
+title = "FBX Batch Importer"
+initial_position = 2
+size = Vector2i(700, 550)
+exclusive = true
+script = ExtResource("1_6p777")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+custom_minimum_size = Vector2(625, 450)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(625, 450)
+layout_mode = 2
+alignment = 1
+
+[node name="SettingsGrid" type="GridContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="Spacer4" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "FBX Batch Importer Settings"
+horizontal_alignment = 1
+
+[node name="Spacer5" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator8" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator9" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="Verbosity" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Verbosity:"
+
+[node name="VerbosityOptionButton" type="OptionButton" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+selected = 3
+item_count = 20
+popup/item_0/text = "NONE"
+popup/item_0/id = 0
+popup/item_1/text = "ERRORS"
+popup/item_1/id = 1
+popup/item_2/text = "WARNINGS"
+popup/item_2/id = 2
+popup/item_3/text = "INFO"
+popup/item_3/id = 3
+popup/item_4/text = "DEBUG"
+popup/item_4/id = 4
+popup/item_5/text = "NONE"
+popup/item_5/id = 5
+popup/item_6/text = "ERRORS"
+popup/item_6/id = 6
+popup/item_7/text = "WARNINGS"
+popup/item_7/id = 7
+popup/item_8/text = "INFO"
+popup/item_8/id = 8
+popup/item_9/text = "DEBUG"
+popup/item_9/id = 9
+popup/item_10/text = "NONE"
+popup/item_10/id = 10
+popup/item_11/text = "ERRORS"
+popup/item_11/id = 11
+popup/item_12/text = "WARNINGS"
+popup/item_12/id = 12
+popup/item_13/text = "INFO"
+popup/item_13/id = 13
+popup/item_14/text = "DEBUG"
+popup/item_14/id = 14
+popup/item_15/text = "NONE"
+popup/item_15/id = 15
+popup/item_16/text = "ERRORS"
+popup/item_16/id = 16
+popup/item_17/text = "WARNINGS"
+popup/item_17/id = 17
+popup/item_18/text = "INFO"
+popup/item_18/id = 18
+popup/item_19/text = "DEBUG"
+popup/item_19/id = 19
+
+[node name="Spacer" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="Albedo" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Albedo/Material:"
+
+[node name="AlbedoLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="AlbedoBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="Spacer2" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="AutoFillCheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Auto-fill other texture paths from Albedo"
+
+[node name="Spacer3" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="NormalMap" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Normal Map:"
+
+[node name="NormalLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="NormalBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="MetalMap" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Metal Map:"
+
+[node name="MetalLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="MetalBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="EmissionMap" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Emission Map:"
+
+[node name="EmissionLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="EmissionBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="RoughnessMap" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Roughness Map:"
+
+[node name="RoughnessLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="RoughnessBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator5" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="FBXDirectory" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "FBX Directory:"
+
+[node name="FBXDirLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="FBXDirBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="MaterialDirectory" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Material Output Directory:"
+
+[node name="MaterialDirLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="MaterialDirBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="OutputSceneDir" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Scene Output Directory:"
+
+[node name="OutputSceneDirLineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="OutputSceneDirBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = ". . ."
+
+[node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator6" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="HSeparator7" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="PrepMaterialbutton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Process & Save Material"
+
+[node name="ProcessFBXButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Process FBX Files"
+
+[node name="Close" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Close"
+
+[node name="AlbedoFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+
+[node name="NormalFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+
+[node name="MetalFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+
+[node name="EmissionFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+
+[node name="RoughnessFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+
+[node name="FBXDirDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a Directory"
+ok_button_text = "Select Current Folder"
+file_mode = 2
+
+[node name="MaterialDirDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a Directory"
+ok_button_text = "Select Current Folder"
+file_mode = 2
+
+[node name="OutputSceneDirDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a Directory"
+ok_button_text = "Select Current Folder"
+file_mode = 2
