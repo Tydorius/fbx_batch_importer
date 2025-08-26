@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dc8fiavobifg5"]
 
-[ext_resource type="Script" uid="uid://cmsj221otbo2x" path="res://addons/fbx_batch_importer/fbx_batch_importer_popup.gd" id="1_6p777"]
+[ext_resource type="Script" uid="uid://d3dwg81sogwdo" path="res://addons/fbx_batch_importer/fbx_batch_importer_popup.gd" id="1_6p777"]
 
 [node name="FBXBatchImporterPopup" type="Window"]
 title = "FBX Batch Importer"
@@ -10,7 +10,7 @@ exclusive = true
 script = ExtResource("1_6p777")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
-custom_minimum_size = Vector2(625, 450)
+custom_minimum_size = Vector2(650, 450)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -54,7 +54,7 @@ text = "Verbosity:"
 [node name="VerbosityOptionButton" type="OptionButton" parent="CenterContainer/VBoxContainer/SettingsGrid"]
 layout_mode = 2
 selected = 3
-item_count = 20
+item_count = 5
 popup/item_0/text = "NONE"
 popup/item_0/id = 0
 popup/item_1/text = "ERRORS"
@@ -65,36 +65,6 @@ popup/item_3/text = "INFO"
 popup/item_3/id = 3
 popup/item_4/text = "DEBUG"
 popup/item_4/id = 4
-popup/item_5/text = "NONE"
-popup/item_5/id = 5
-popup/item_6/text = "ERRORS"
-popup/item_6/id = 6
-popup/item_7/text = "WARNINGS"
-popup/item_7/id = 7
-popup/item_8/text = "INFO"
-popup/item_8/id = 8
-popup/item_9/text = "DEBUG"
-popup/item_9/id = 9
-popup/item_10/text = "NONE"
-popup/item_10/id = 10
-popup/item_11/text = "ERRORS"
-popup/item_11/id = 11
-popup/item_12/text = "WARNINGS"
-popup/item_12/id = 12
-popup/item_13/text = "INFO"
-popup/item_13/id = 13
-popup/item_14/text = "DEBUG"
-popup/item_14/id = 14
-popup/item_15/text = "NONE"
-popup/item_15/id = 15
-popup/item_16/text = "ERRORS"
-popup/item_16/id = 16
-popup/item_17/text = "WARNINGS"
-popup/item_17/id = 17
-popup/item_18/text = "INFO"
-popup/item_18/id = 18
-popup/item_19/text = "DEBUG"
-popup/item_19/id = 19
 
 [node name="Spacer" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
 layout_mode = 2
@@ -205,6 +175,36 @@ layout_mode = 2
 [node name="OutputSceneDirBrowseButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsGrid"]
 layout_mode = 2
 text = ". . ."
+
+[node name="Spacer8" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="MeshOnlyToggle" type="CheckBox" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Only Output Mesh TSCN"
+
+[node name="Spacer7" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+
+[node name="CollisionShapeType" type="Label" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+text = "Collision Shape:"
+
+[node name="CollisionShapeTypeOptionButton" type="OptionButton" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
+selected = 1
+item_count = 4
+popup/item_0/text = "TRIMESH_COLLISION"
+popup/item_0/id = 0
+popup/item_1/text = "SINGLE_CONVEX_COLLISION"
+popup/item_1/id = 1
+popup/item_2/text = "SIMPLIFIED_CONVEX_COLLISION"
+popup/item_2/id = 2
+popup/item_3/text = "MULTIPLE_CONVEX_COLLISION"
+popup/item_3/id = 3
+
+[node name="Spacer6" type="Control" parent="CenterContainer/VBoxContainer/SettingsGrid"]
+layout_mode = 2
 
 [node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsGrid"]
 layout_mode = 2
