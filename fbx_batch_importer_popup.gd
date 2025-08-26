@@ -21,6 +21,8 @@ extends Window
 @onready var material_dir_browse_button: Button = $CenterContainer/VBoxContainer/SettingsGrid/MaterialDirBrowseButton
 @onready var output_scene_dir_line_edit: LineEdit = $CenterContainer/VBoxContainer/SettingsGrid/OutputSceneDirLineEdit
 @onready var output_scene_dir_browse_button: Button = $CenterContainer/VBoxContainer/SettingsGrid/OutputSceneDirBrowseButton
+@onready var mesh_only_checkbox: CheckBox = $CenterContainer/VBoxContainer/SettingsGrid/MeshOnlyToggle
+@onready var collision_shape_option_button: OptionButton = $CenterContainer/VBoxContainer/SettingsGrid/CollisionShapeTypeOptionButton
 
 @onready var prep_material_button: Button = $CenterContainer/VBoxContainer/SettingsGrid/PrepMaterialbutton
 @onready var process_fbx_button: Button = $CenterContainer/VBoxContainer/SettingsGrid/ProcessFBXButton
@@ -40,6 +42,7 @@ extends Window
 # --- Variables to hold the settings (mirroring your original @export vars) ---
 var current_file : String
 var original_path : String # Used internally for albedo/material base name resolution
+var mesh_only : bool # Flag for mesh only toggle, so that changing it during execution doesn't break anything
 
 enum Verbosity {
 	NONE,
@@ -48,7 +51,14 @@ enum Verbosity {
 	INFO,
 	DEBUG
 }
+enum CollisionShapes {
+	TRIMESH_COLLISION,
+	SINGLE_CONVEX_COLLISION,
+	SIMPLIFIED_CONVEX_COLLISION,
+	MULTIPLE_CONVEX_COLLISION
+}
 var current_verbosity: int = Verbosity.INFO # Internal variable
+var current_shape: int = CollisionShapes.SINGLE_CONVEX_COLLISION # Initial selection
 
 # These will be populated from LineEdits
 var albedo_or_material_path_internal: String = ""
@@ -72,12 +82,21 @@ func _ready() -> void:
 
 	# Populate Verbosity OptionButton
 	verbosity_option_button.clear()
-	# Populate Verbosity OptionButton
 	for verbosity_name in Verbosity.keys():
 		verbosity_option_button.add_item(verbosity_name)
 	verbosity_option_button.selected = current_verbosity
 	verbosity_option_button.item_selected.connect(_on_verbosity_selected)
 	_update_verbosity_debug_print()
+
+	# Populate Collision OptionButton
+	collision_shape_option_button.clear()
+	for collision_shape in CollisionShapes.keys():
+		collision_shape_option_button.add_item(collision_shape)
+	collision_shape_option_button.selected = current_shape
+	collision_shape_option_button.item_selected.connect(_on_collision_shape_selected)
+
+	# Connect the mesh only checkbox
+	mesh_only_checkbox.toggled.connect(_on_mesh_only_toggled)
 
 	# Connect signals for UI elements
 	albedo_line_edit.text_changed.connect(_on_albedo_path_changed)
@@ -138,6 +157,14 @@ func _show_dir_dialog(dialog: FileDialog, target_line_edit: LineEdit) -> void:
 	dialog.popup_centered_ratio()
 
 # --- Signal Handlers for UI ---
+func _on_collision_shape_selected(index: int) -> void:
+	current_shape = index
+	_print_debug("Collision shape type set to {v}".format({"v": CollisionShapes.keys()[current_shape]}))
+
+func _on_mesh_only_toggled(button_pressed: bool) -> void:
+	mesh_only = button_pressed
+	_print_debug("Mesh only mode set to: {b}".format({"b": mesh_only}))
+
 func _on_verbosity_selected(index: int) -> void:
 	current_verbosity = index
 	_update_verbosity_debug_print()
@@ -224,6 +251,7 @@ func _on_prep_material_button_pressed() -> void:
 		_print_error("Material processing failed or material not saved.")
 
 func _on_process_fbx_button_pressed() -> void:
+	self.mesh_only = mesh_only_checkbox.button_pressed
 	self.original_path = convert_uid(get_albedo_or_material_path())
 	if self.original_path.is_empty() and not albedo_or_material_path_internal.is_empty():
 		_print_error("Albedo/Material path '{path}' could not be resolved. Cannot process FBX files.".format({"path": albedo_or_material_path_internal}))
@@ -521,23 +549,23 @@ func _process_single_fbx(fbx_path: String, target_material: StandardMaterial3D, 
 		fbx_scene_instance.queue_free()
 		return
 
-	# Create the new MeshInstance3D that will be the root of our new scene
+	# Create the new MeshInstance3D
 	var new_mesh_instance = MeshInstance3D.new()
 
 	if mesh_instance_original.mesh:
-		new_mesh_instance.mesh = mesh_instance_original.mesh.duplicate(true) # Duplicate the mesh resource
+		new_mesh_instance.mesh = mesh_instance_original.mesh.duplicate(true)
 	else:
 		_print_warning("Original MeshInstance in {p} has no mesh resource. Skipping.".format({"p": fbx_path}))
 		fbx_scene_instance.queue_free()
-		new_mesh_instance.queue_free() # Clean up the created new_mesh_instance
+		new_mesh_instance.queue_free()
 		return
 
-	# Set the name for the new MeshInstance3D; this will be the root node's name in the saved scene.
-	# It should also match the desired filename (without extension).
-	new_mesh_instance.name = fbx_path.get_file().get_basename()
-	new_mesh_instance.transform = mesh_instance_original.transform # Preserve original transform
+	# Set the name for the MeshInstance3D
+	var scene_name = fbx_path.get_file().get_basename()
+	new_mesh_instance.name = scene_name
+	new_mesh_instance.transform = mesh_instance_original.transform
 
-	_print_debug("Prepared MeshInstance3D '{name}' to be the scene root.".format({"name": new_mesh_instance.name}))
+	_print_debug("Prepared MeshInstance3D '{name}'.".format({"name": new_mesh_instance.name}))
 
 	# Apply material
 	if new_mesh_instance.mesh != null:
@@ -548,15 +576,35 @@ func _process_single_fbx(fbx_path: String, target_material: StandardMaterial3D, 
 		else:
 			_print_warning("MeshInstance3D '{name}' has no surfaces.".format({"name": new_mesh_instance.name}))
 	else:
-		# This case should ideally be caught by the check after mesh duplication
 		_print_warning("MeshInstance3D '{name}' has no mesh resource after duplication.".format({"name": new_mesh_instance.name}))
 
-	var scene_save_path = resolved_output_dir.path_join(new_mesh_instance.name + ".tscn")
+	# Determine root node based on mesh_only setting
+	var root_node: Node3D = Node3D.new()
+	
+	if mesh_only:
+		# Old behavior: MeshInstance3D is the root
+		_print_debug("Using mesh-only mode for {name}".format({"name": scene_name}))
+		root_node = new_mesh_instance
+	else:
+		# New default behavior: Create the full scene structure
+		_print_debug("Creating physics-enabled scene for {name}".format({"name": scene_name}))
+		
+		# Create the root Node3D
+		root_node = Node3D.new()
+		root_node.set_name(scene_name)
+		
+		# Reparent the MeshInstance3D to the new root
+		root_node.add_child(new_mesh_instance)
+		new_mesh_instance.set_owner(root_node)
+		
+		# Add physics components based on selected collision type
+		_add_physics_components(new_mesh_instance)
+
+	# Save the scene
+	var scene_save_path = resolved_output_dir.path_join(scene_name + ".tscn")
 	var packed_scene_to_save = PackedScene.new()
 
-	# Pack the new_mesh_instance directly. This makes it the root of the saved scene.
-	var pack_error = packed_scene_to_save.pack(new_mesh_instance)
-
+	var pack_error = packed_scene_to_save.pack(root_node)
 	if pack_error != OK:
 		_print_error("Failed to pack scene for saving: {p} Error: {e}".format({"p": scene_save_path, "e": error_string(pack_error)}))
 	else:
@@ -564,11 +612,14 @@ func _process_single_fbx(fbx_path: String, target_material: StandardMaterial3D, 
 		if save_error != OK:
 			_print_error("Failed to save scene to: {p} Error: {e}".format({"p": scene_save_path, "e": error_string(save_error)}))
 		else:
-			_print_info("Successfully saved new scene with MeshInstance3D as root to: {p}".format({"p": scene_save_path}))
+			_print_info("Successfully saved scene to: {p}".format({"p": scene_save_path}))
 
-	# Clean up the nodes created/instantiated for this specific FBX file
-	fbx_scene_instance.queue_free() # Free the original instantiated FBX scene
-	new_mesh_instance.queue_free()  # Free the MeshInstance3D that was packed (its state is saved to disk)
+	# Clean up
+	fbx_scene_instance.queue_free()
+	
+	# Only free new_mesh_instance if it's NOT the root node (when mesh_only is false)
+	if not mesh_only:
+		new_mesh_instance.queue_free()
 
 	current_file = ""
 
@@ -597,3 +648,28 @@ func _print_info(message: String):
 func _print_debug(message: String):
 	if current_verbosity >= Verbosity.DEBUG:
 		print("DEBUG (FBX Importer): {msg}".format({"msg": message}))
+
+# Add this new function to handle physics setup
+func _add_physics_components(mesh_instance: MeshInstance3D) -> void:
+	_print_debug("Adding physics components to {name} with collision type: {type}".format({
+		"name": mesh_instance.name, 
+		"type": CollisionShapes.keys()[current_shape]
+	}))
+	
+	# Use Godot's built-in methods for collision generation
+	match current_shape:
+		CollisionShapes.TRIMESH_COLLISION:
+			mesh_instance.create_trimesh_collision()
+			_print_debug("Created trimesh collision for {name}".format({"name": mesh_instance.name}))
+		CollisionShapes.SINGLE_CONVEX_COLLISION:
+			mesh_instance.create_convex_collision(false)
+			_print_debug("Created single convex collision for {name}".format({"name": mesh_instance.name}))
+		CollisionShapes.SIMPLIFIED_CONVEX_COLLISION:
+			mesh_instance.create_convex_collision(true)
+			_print_debug("Created simplified convex collision for {name}".format({"name": mesh_instance.name}))
+		CollisionShapes.MULTIPLE_CONVEX_COLLISION:
+			mesh_instance.create_multiple_convex_collisions()
+			_print_debug("Created multiple convex collisions for {name}".format({"name": mesh_instance.name}))
+		_:
+			_print_warning("Unknown collision shape type selected: {t}".format({"t": current_shape}))
+			mesh_instance.create_trimesh_collision()
