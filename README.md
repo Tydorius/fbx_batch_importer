@@ -4,11 +4,13 @@
 
 ## Description
 
-This tool script for Godot Engine 4.4 automates the process of importing multiple FBX files from a specified directory, extracting the primary mesh from each, applying a material, and saving each textured mesh as a new `.tscn` scene file. The material can either be loaded from an existing Godot Material resource or automatically created from a set of provided textures (Albedo, Normal, Metal, Emission, Roughness).
+This tool script for Godot Engine 4.4 automates the process of importing multiple FBX files from a specified directory, extracting the primary mesh from each, applying a material, generating a collision shape, and saving each textured mesh as a new `.tscn` scene file. The material can either be loaded from an existing Godot Material resource or automatically created from a set of provided textures (Albedo, Normal, Metal, Emission, Roughness).
+
+Originally, this only created a MeshInstance3D and created a scene with only the single object. Based on feedback, I have added additional functionality that uses the MeshInstance3D built in functions to automatically generate a collision mesh. The old functionality can be used through a new checkbox labeled 'Only Output Mesh TSCN'.
 
 ## Benefits
 
-This gets around some limitations on bulk importing FBX files from asset providers such as Synty. The end result is a tscn with only a single mesh inside. No animationplayers, not blank material 0, no hoping the fbx is configured to load an actual texture so you don't have to manually apply it yourself.
+This gets around some limitations on bulk importing FBX files from asset providers such as Synty. The end result is a tscn with only a single mesh inside. No animationplayers, no blank material 0, no hoping the fbx is configured to load an actual texture so you don't have to manually apply it yourself.
 
 ## Requirements
 
@@ -27,11 +29,13 @@ This gets around some limitations on bulk importing FBX files from asset provide
 7.  If you only wish to process the material, you can use the "Process & Save Material" button once you've selected the files and the output destination.
 8.  Select the FBX source directory.
 9.  Select the output directory for your TSCN files.
-10. Trigger the batch with the "Process FBX Files" button.
+10. If you wish to only generate TSCN files containing a single MeshInstance3D, check the 'Only Output Mesh TSCN' checkbox.
+11. Otherwise, use the dropdown to select the type of mesh you wish to generate.
+12. Trigger the batch with the "Process FBX Files" button.
 
-## Notes and Warnings
+## Notes
 
-I have only tested this with Synty assets using a single PNG file. I included the options for normal map, etc., but I have not yet tested them. That's the primary reason this is not consider the 1.0 release. If someone else confirms they work, or if I test it, I'll move to 1.0 rc.
+The best place to report issues is via [Github](https://github.com/Tydorius/fbx_batch_importer/issues).
 
 ## Support Me
 
