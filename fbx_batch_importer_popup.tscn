@@ -5,7 +5,7 @@
 [node name="FBXBatchImporterPopup" type="Window"]
 title = "FBX Batch Importer"
 initial_position = 2
-size = Vector2i(700, 550)
+size = Vector2i(700, 600)
 exclusive = true
 script = ExtResource("1_6p777")
 
